@@ -17,11 +17,12 @@ public class Owner extends BaseDomain {
     @NotBlank
     @Size(min = 11, max = 11)
     @Column(name = "cpf", unique=true, length = 11, nullable = false)
+    //TODO adcionar validação de cpf existente na classe CPFHandlerService.java
     private String cpf;
 
     @NotBlank
     @Size(min = 11, max = 14)
-    @Column(name = "cel_number", length = 14,  nullable = false)
+    @Column(name = "cel_number", length = 14, unique = true, nullable = false)
     private String celNumber;
 
     @Email

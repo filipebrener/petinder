@@ -1,7 +1,7 @@
 package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.domains.Owner;
-import br.com.petinder.backend.dtos.Message;
+import br.com.petinder.backend.dtos.MessageDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.owner.EditOwnerDTO;
 import br.com.petinder.backend.dtos.owner.ResponseOwnerDTO;
@@ -9,15 +9,11 @@ import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.services.OwnerService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,9 +37,9 @@ public class OwnerController {
     }
 
     @DeleteMapping("/delete/{uuid}")
-    public ResponseEntity<Message> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
+    public ResponseEntity<MessageDTO> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
         ownerService.delete(uuid);
-        return new ResponseEntity<>(new Message("Usuário apagado com sucesso!"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Usuário apagado com sucesso!"), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")

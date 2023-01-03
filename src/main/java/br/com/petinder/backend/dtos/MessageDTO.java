@@ -1,13 +1,13 @@
 package br.com.petinder.backend.dtos;
 
-public class Message {
+public class MessageDTO {
     private String message;
 
-    public Message(String message) {
+    public MessageDTO(String message) {
         this.message = message;
     }
 
-    public Message() {
+    public MessageDTO() {
     }
 
     public String getMessage() {

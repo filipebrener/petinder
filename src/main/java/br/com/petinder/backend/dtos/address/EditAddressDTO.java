@@ -7,28 +7,20 @@ import jakarta.validation.constraints.NotNull;
 @Embeddable
 public class EditAddressDTO {
 
-    @NotBlank
     private String street;
 
-    @NotBlank
     private String neighborhood;
 
-    @NotBlank
     private String zipCode;
 
-    @NotNull
     private int number;
 
-    @NotBlank
     private String complement;
 
-    @NotBlank
     private String city;
 
-    @NotBlank
     private String state;
 
-    @NotBlank
     private String country;
 
     public EditAddressDTO(String street, String neighborhood, String zipCode, int number, String complement, String city, String state, String country) {
@@ -66,7 +58,7 @@ public class EditAddressDTO {
         this.zipCode = zipCode;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 

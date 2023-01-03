@@ -68,14 +68,14 @@ public class Address {
     }
 
     public Address(EditAddressDTO address) {
-        this.street = address.getStreet();
-        this.neighborhood = address.getNeighborhood();
-        this.zipCode = address.getZipCode();
-        this.number = address.getNumber();
-        this.complement = address.getComplement();
-        this.country = address.getCountry();
-        this.state = address.getState();
-        this.city = address.getCity();
+        if(address.getStreet() != null) this.street = address.getStreet();
+        if(address.getNeighborhood() != null) this.neighborhood = address.getNeighborhood();
+        if(address.getZipCode() != null) this.zipCode = address.getZipCode();
+        if(address.getNumber() != null) this.number = address.getNumber();
+        if(address.getComplement() != null) this.complement = address.getComplement();
+        if(address.getCountry() != null) this.country = address.getCountry();
+        if(address.getState() != null) this.state = address.getState();
+        if(address.getCity() != null) this.city = address.getCity();
     }
 
     public String getStreet() {

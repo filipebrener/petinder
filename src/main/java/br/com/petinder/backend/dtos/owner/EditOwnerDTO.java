@@ -22,6 +22,10 @@ public class EditOwnerDTO {
         return uuid;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getName() {
         return name;
     }

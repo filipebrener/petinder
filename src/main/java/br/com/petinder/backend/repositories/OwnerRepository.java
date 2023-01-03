@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     public long countByCpf(String cpf);
     public long countByEmail(String email);
+    public long countByCelNumber(String celNumber);
     public Owner findByUuid(String uuid);
-
 }

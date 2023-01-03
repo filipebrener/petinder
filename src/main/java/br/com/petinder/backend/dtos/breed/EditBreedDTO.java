@@ -1,32 +1,33 @@
-package br.com.petinder.backend.domains;
+package br.com.petinder.backend.dtos.breed;
 
-import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-public class Breed extends BaseDomain{
+public class EditBreedDTO {
 
-    @Column(name = "name")
+    @NotBlank(message = "O uuid não pode ficar em branco")
+    private String uuid;
+
     @NotBlank(message = "A raça não pode ficar em branco")
     private String name;
 
-    @Column(name = "description")
     @NotBlank(message = "A descrição não pode ficar em branco")
     private String description;
 
-    public Breed(String name, String description) {
+    public EditBreedDTO(String name, String description, String uuid) {
         this.name = name;
         this.description = description;
+        this.uuid = uuid;
     }
 
-    public Breed() {
+    public EditBreedDTO() {
     }
 
-    public Breed(CreateBreedDTO requestDTO) {
-        this.description = requestDTO.getDescription();
-        this.name = requestDTO.getName();
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -44,4 +45,5 @@ public class Breed extends BaseDomain{
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

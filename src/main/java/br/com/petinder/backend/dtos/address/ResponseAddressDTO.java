@@ -31,6 +31,9 @@ public class ResponseAddressDTO {
         this.country = address.getCountry();
     }
 
+    public ResponseAddressDTO() {
+    }
+
     public String getStreet() {
         return street;
     }

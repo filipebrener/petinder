@@ -42,6 +42,10 @@ public class CreateAddressDTO {
         this.country = country;
     }
 
+    public CreateAddressDTO() {
+
+    }
+
     public String getStreet() {
         return street;
     }

@@ -32,8 +32,10 @@ public class OwnerService {
         List<String> errors = new ArrayList<>();
         boolean alreadyExistsWithEmail = ownerRepository.countByEmail(dto.getEmail()) > 0;
         boolean alreadyExistsWithCpf = ownerRepository.countByCpf(dto.getCpf()) > 0;
-        if (alreadyExistsWithEmail) errors.add("E-mail informado já foi cadastrado");
-        if (alreadyExistsWithCpf) errors.add("CPF informado já foi cadastrado");
+        boolean alreadyExistsWithCelNumber = ownerRepository.countByCelNumber(dto.getCelNumber()) > 0;
+        if (alreadyExistsWithEmail) errors.add("E-mail informado já foi cadastrado!");
+        if (alreadyExistsWithCpf) errors.add("CPF informado já foi cadastrado!");
+        if (alreadyExistsWithCelNumber) errors.add("Número de celular informado já foi cadastrado!");
         return errors;
     }
 
@@ -66,8 +68,8 @@ public class OwnerService {
     public Owner edit(EditOwnerDTO dto) throws NotFoundException {
         Owner owner = ownerRepository.findByUuid(dto.getUuid());
         if(owner == null) throw new NotFoundException("Não foi possível encontrar o usuário com uuid: " + dto.getUuid());
-        owner.setName(dto.getName());
-        owner.setCelNumber(dto.getCelNumber());
+        if(dto.getName() != null) owner.setName(dto.getName());
+        if(dto.getCelNumber() != null) owner.setCelNumber(dto.getCelNumber());
         EditAddressDTO newAddressDto = dto.getAddress();
         if(newAddressDto != null) owner.setAddress(new Address(newAddressDto));
         return ownerRepository.save(owner);

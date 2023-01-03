@@ -9,6 +9,8 @@ public class ResponseOwnerDTO {
 
     private String uuid;
 
+    private String cpf;
+
     private String name;
 
     private String celNumber;
@@ -21,9 +23,21 @@ public class ResponseOwnerDTO {
         this.id = owner.getId();
         this.uuid = owner.getUuid();
         this.name = owner.getName();
+        this.cpf = owner.getCpf();
         this.email = owner.getEmail();
         this.celNumber = owner.getCelNumber();
         this.address = owner.getAddress() != null ? new ResponseAddressDTO(owner.getAddress()) : null;
+    }
+
+    public ResponseOwnerDTO() {
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public long getId() {
