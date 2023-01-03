@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
@@ -14,10 +15,9 @@ public class Owner extends BaseDomain {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @CPF
     @NotBlank
-    @Size(min = 11, max = 11)
     @Column(name = "cpf", unique=true, length = 11, nullable = false)
-    //TODO adcionar validação de cpf existente na classe CPFHandlerService.java
     private String cpf;
 
     @NotBlank
