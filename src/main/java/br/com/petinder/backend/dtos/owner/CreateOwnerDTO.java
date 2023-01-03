@@ -1,18 +1,18 @@
 package br.com.petinder.backend.dtos.owner;
 
-import br.com.petinder.backend.dtos.address.ResponseAddressDTO;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CPF;
 
 public class CreateOwnerDTO {
 
     @NotBlank(message = "O nome não pode estar vazio!")
     private String name;
 
+    @CPF(message = "O CPF [${validatedValue}] não é válido!")
     @NotBlank(message = "O CPF não pode estar vazio!")
-    @Size(min = 11, max = 11, message = "O CPF deve conter exatamente 11 caracteres!")
     private String cpf;
 
     @NotBlank(message = "O número de telefone não pode estar vazio!")
@@ -24,21 +24,6 @@ public class CreateOwnerDTO {
     private String email;
 
     private CreateAddressDTO address;
-
-    public CreateOwnerDTO(String name, String cpf, String celNumber, String email) {
-        this.name = name;
-        this.cpf = cpf;
-        this.celNumber = celNumber;
-        this.email = email;
-    }
-
-    public CreateOwnerDTO(String name, String cpf, String celNumber, String email, CreateAddressDTO address) {
-        this.name = name;
-        this.cpf = cpf;
-        this.celNumber = celNumber;
-        this.email = email;
-        this.address = address;
-    }
 
     public CreateOwnerDTO() {
     }

@@ -21,14 +21,14 @@ public class OwnerService {
     OwnerRepository ownerRepository;
 
     public Owner create(CreateOwnerDTO dto) throws AlreadyExistsException {
-        List<String> errors = getOwnerValidationErrors(dto);
+        List<String> errors = getOwnerPersistenseValidationErrors(dto);
         boolean hasErrors = !errors.isEmpty();
         if (hasErrors) throw new AlreadyExistsException("Não foi possível criar o usuário!", errors);
         boolean hasAddress = dto.getAddress() != null;
         return (!hasAddress ? createWithoutAddress(dto) : createWithAddress(dto));
     }
 
-    public List<String> getOwnerValidationErrors(CreateOwnerDTO dto){
+    public List<String> getOwnerPersistenseValidationErrors(CreateOwnerDTO dto){
         List<String> errors = new ArrayList<>();
         boolean alreadyExistsWithEmail = ownerRepository.countByEmail(dto.getEmail()) > 0;
         boolean alreadyExistsWithCpf = ownerRepository.countByCpf(dto.getCpf()) > 0;
