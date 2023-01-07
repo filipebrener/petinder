@@ -1,6 +1,5 @@
 package br.com.petinder.backend.dtos.pet;
 
-import br.com.petinder.backend.enums.PetType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -8,9 +7,6 @@ public class EditPetDTO {
 
     @NotBlank
     private String uuid;
-
-    @NotBlank
-    private PetType type;
 
     @NotBlank
     private String name;
@@ -24,8 +20,7 @@ public class EditPetDTO {
     @NotBlank
     private String breedUuid;
 
-    public EditPetDTO(PetType type, String name, int age, boolean hasPedigree, String breedUuid) {
-        this.type = type;
+    public EditPetDTO(String name, int age, boolean hasPedigree, String breedUuid) {
         this.name = name;
         this.age = age;
         this.hasPedigree = hasPedigree;
@@ -41,14 +36,6 @@ public class EditPetDTO {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public PetType getType() {
-        return type;
-    }
-
-    public void setType(PetType type) {
-        this.type = type;
     }
 
     public String getName() {

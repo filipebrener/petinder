@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/breed")
 public class BreedController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class BreedController {
     @DeleteMapping("/delete/{uuid}")
     public ResponseEntity<MessageDTO> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
         breedService.delete(uuid);
-        return new ResponseEntity<>(new MessageDTO("Raça apagado com sucesso!"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Raça apagada com sucesso!"), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")

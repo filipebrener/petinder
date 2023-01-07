@@ -5,7 +5,6 @@ import br.com.petinder.backend.dtos.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.dtos.errors.ErrorsListDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
-import jdk.jshell.ErroneousSnippet;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,14 +27,12 @@ public class GlobalExceptionHandler {
             errors.put(e.getField(), currentList);
         });
         List<FieldErrorsMessageDTO> response = new ArrayList<>();
-        errors.forEach( (key,value) -> {
-            response.add(new FieldErrorsMessageDTO(key, value));
-        });
+        errors.forEach( (key,value) -> response.add(new FieldErrorsMessageDTO(key, value)));
         return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ErrorsListDTO> handleAlreadyExistsException(
+        public ResponseEntity<ErrorsListDTO> handleAlreadyExistsException(
             AlreadyExistsException ex) {
         ErrorsListDTO responseBody = new ErrorsListDTO(ex.getMessage(), ex.getErrors());
         return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);

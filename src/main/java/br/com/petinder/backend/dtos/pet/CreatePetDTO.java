@@ -1,28 +1,23 @@
 package br.com.petinder.backend.dtos.pet;
 
-import br.com.petinder.backend.enums.PetType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CreatePetDTO {
 
-    @NotBlank
-    private PetType type;
-
-    @NotBlank
+    @NotBlank(message = "O nome não pode ficar em branco!")
     private String name;
 
-    @NotNull
+    @NotNull(message = "É necessário informar a idade!")
     private int age;
 
-    @NotNull
+    @NotNull(message = "É necessário informar se tem pedigree!")
     private boolean hasPedigree;
 
-    @NotBlank
+    @NotBlank(message = "É necessário informar o Uuid da raça!")
     private String breedUuid;
 
-    public CreatePetDTO(PetType type, String name, int age, boolean hasPedigree, String breedUuid) {
-        this.type = type;
+    public CreatePetDTO(String name, int age, boolean hasPedigree, String breedUuid) {
         this.name = name;
         this.age = age;
         this.hasPedigree = hasPedigree;
@@ -30,14 +25,6 @@ public class CreatePetDTO {
     }
 
     public CreatePetDTO() {
-    }
-
-    public PetType getType() {
-        return type;
-    }
-
-    public void setType(PetType type) {
-        this.type = type;
     }
 
     public String getName() {

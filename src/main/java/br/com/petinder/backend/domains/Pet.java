@@ -1,7 +1,6 @@
 package br.com.petinder.backend.domains;
 
 import br.com.petinder.backend.dtos.pet.CreatePetDTO;
-import br.com.petinder.backend.enums.PetType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +10,6 @@ import java.util.List;
 @Entity
 @Table(name = "pet")
 public class Pet extends BaseDomain {
-
-    @NotBlank
-    @Column(name = "type")
-    private PetType type;
 
     @NotBlank
     @Column(name = "name")
@@ -38,8 +33,7 @@ public class Pet extends BaseDomain {
     @OneToMany
     private List<Pet> matches;
 
-    public Pet(PetType type, String name, int age, boolean hasPedigree, Breed breed) {
-        this.type = type;
+    public Pet(String name, int age, boolean hasPedigree, Breed breed) {
         this.name = name;
         this.age = age;
         this.hasPedigree = hasPedigree;
@@ -50,18 +44,9 @@ public class Pet extends BaseDomain {
     }
 
     public Pet(CreatePetDTO dto) {
-        this.type = dto.getType();
         this.name = dto.getName();
         this.age = dto.getAge();
         this.hasPedigree = dto.getHasPedigree();
-    }
-
-    public PetType getType() {
-        return type;
-    }
-
-    public void setType(PetType type) {
-        this.type = type;
     }
 
     public String getName() {

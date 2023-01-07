@@ -1,8 +1,6 @@
 package br.com.petinder.backend.dtos.address;
 
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Embeddable
 public class EditAddressDTO {

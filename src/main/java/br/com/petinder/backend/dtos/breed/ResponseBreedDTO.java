@@ -1,6 +1,7 @@
 package br.com.petinder.backend.dtos.breed;
 
 import br.com.petinder.backend.domains.Breed;
+import br.com.petinder.backend.enums.PetType;
 
 public class ResponseBreedDTO {
 
@@ -10,10 +11,16 @@ public class ResponseBreedDTO {
 
     private String description;
 
+    private PetType type;
+
     public ResponseBreedDTO(Breed persistedBreed) {
         this.description = persistedBreed.getDescription();
-        this.name = persistedBreed.getDescription();
+        this.name = persistedBreed.getName();
         this.uuid = persistedBreed.getUuid();
+        this.type = persistedBreed.getType();
+    }
+
+    public ResponseBreedDTO() {
     }
 
     public String getUuid() {
@@ -38,5 +45,13 @@ public class ResponseBreedDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public PetType getType() {
+        return type;
+    }
+
+    public void setType(PetType type) {
+        this.type = type;
     }
 }

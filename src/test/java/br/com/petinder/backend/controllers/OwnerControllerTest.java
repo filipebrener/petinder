@@ -6,6 +6,7 @@ import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.dtos.MessageDTO;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
 import br.com.petinder.backend.dtos.errors.ErrorsListDTO;
+import br.com.petinder.backend.dtos.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.owner.EditOwnerDTO;
 import br.com.petinder.backend.dtos.owner.ResponseOwnerDTO;
@@ -17,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,8 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OwnerControllerTest extends BaseTest {
 
-    @Autowired
-    private WebTestClient webTestClient;
     @Autowired
     private OwnerRepository ownerRepository;
 
@@ -157,7 +157,6 @@ public class OwnerControllerTest extends BaseTest {
     @Test
     public void deleteOwnerTest() throws AlreadyExistsException {
         Owner owner = createOwner();
-
         MessageDTO response = webTestClient.delete()
                 .uri("/owner/delete/" + owner.getUuid())
                 .exchange()
@@ -166,8 +165,71 @@ public class OwnerControllerTest extends BaseTest {
                 .returnResult()
                 .getResponseBody();
 
+        assertNotNull(response);
         assertEquals("Usuário apagado com sucesso!", response.getMessage());
         assertNull(ownerRepository.findByUuid(owner.getUuid()));
+    }
+
+    @Test
+    public void editNonExistingOwnerTest(){
+        String newName = "Filipe Brenner";
+        String newCelNumber = "+5538999810408";
+        EditOwnerDTO dto = new EditOwnerDTO();
+        dto.setUuid(uuid());
+        dto.setName(newName);
+        dto.setCelNumber(newCelNumber);
+        ErrorsListDTO response = webTestClient.put()
+                .uri("/owner/edit")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
+                .expectBody(ErrorsListDTO.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(response);
+    }
+
+    @Test
+    public void deleteNonExistingOwnerTest(){
+        String uuid = uuid();
+        ErrorsListDTO response = webTestClient.delete()
+                .uri("/owner/delete/" + uuid)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
+                .expectBody(ErrorsListDTO.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(response);
+    }
+
+    @Test
+    public void editOwnerSendingRequestWithoutRequiredFieldsTest(){
+        EditOwnerDTO requestBody = new EditOwnerDTO();
+        List<FieldErrorsMessageDTO> response = webTestClient.put()
+                .uri("/owner/edit")
+                .bodyValue(requestBody)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
+                .expectBodyList(FieldErrorsMessageDTO.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(response);
+        assertEquals(3, response.size());
+    }
+
+    @Test
+    public void createOwnerSendingRequestWithoutRequiredFieldsTest(){
+        CreateOwnerDTO requestBody = new CreateOwnerDTO();
+        List<FieldErrorsMessageDTO> response = webTestClient.post()
+                .uri("/owner/create")
+                .bodyValue(requestBody)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
+                .expectBodyList(FieldErrorsMessageDTO.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(response);
+        assertEquals(4, response.size());
     }
 
     private void assertAllOwnerFields(Owner persistedOwner, CreateOwnerDTO dto){
@@ -176,7 +238,7 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     private void assertOwnerDetails(Owner persistedOwner, CreateOwnerDTO dto){
-        assertNotEquals( null, persistedOwner);
+        assertNotEquals( null, persistedOwner, "O cliente(Dono) não deve estar nulo");
         assertEquals(dto.getName(), persistedOwner.getName(), "O nome deve ser igual");
         assertEquals(dto.getEmail(), persistedOwner.getEmail(), "O email deve ser igual");
         assertEquals(dto.getCpf(), persistedOwner.getCpf(), "O CPF deve ser igual");
@@ -184,7 +246,7 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     private void assertOwnerAddress(Owner persistedOwner, CreateOwnerDTO dto){
-        assertNotEquals(null, persistedOwner.getAddress());
+        assertNotEquals(null, persistedOwner.getAddress(), "O endereço não deve estar nulo");
         Address address = persistedOwner.getAddress();
         CreateAddressDTO addressDTO = dto.getAddress();
         assertEquals(addressDTO.getCountry(), address.getCountry(), "O país deve ser igual");

@@ -1,5 +1,6 @@
 package br.com.petinder.backend.dtos.breed;
 
+import br.com.petinder.backend.domains.Breed;
 import jakarta.validation.constraints.NotBlank;
 
 public class EditBreedDTO {
@@ -20,6 +21,12 @@ public class EditBreedDTO {
     }
 
     public EditBreedDTO() {
+    }
+
+    public EditBreedDTO(Breed breed) {
+        this.uuid = breed.getUuid();
+        this.name = breed.getName();
+        this.description = breed.getDescription();
     }
 
     public String getUuid() {
