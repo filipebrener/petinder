@@ -30,15 +30,15 @@ public class PetController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{uuid}")
-    public ResponseEntity<ResponsePetDTO> get(@PathVariable("uuid") String uuid) throws NotFoundException {
-        Pet pet = petService.getByUuid(uuid);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ResponsePetDTO> get(@PathVariable("id") long id) throws NotFoundException {
+        Pet pet = petService.findById(id);
         return new ResponseEntity<>(new ResponsePetDTO(pet), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{uuid}")
-    public ResponseEntity<MessageDTO> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
-        petService.delete(uuid);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<MessageDTO> delete(@PathVariable("id") long id) throws NotFoundException {
+        petService.delete(id);
         return new ResponseEntity<>(new MessageDTO("Usuário apagado com sucesso!"), HttpStatus.OK);
     }
 

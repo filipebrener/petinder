@@ -3,25 +3,31 @@ package br.com.petinder.backend.dtos.pet;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Date;
+
 public class CreatePetDTO {
 
     @NotBlank(message = "O nome não pode ficar em branco!")
     private String name;
 
     @NotNull(message = "É necessário informar a idade!")
-    private int age;
+    private Date birthDate;
 
     @NotNull(message = "É necessário informar se tem pedigree!")
     private boolean hasPedigree;
 
-    @NotBlank(message = "É necessário informar o Uuid da raça!")
-    private String breedUuid;
+    @NotNull(message = "É necessário informar o ID da raça!")
+    private long breedId;
 
-    public CreatePetDTO(String name, int age, boolean hasPedigree, String breedUuid) {
+    @NotNull(message = "O ID do dono é obrigatório!")
+    private long ownerId;
+
+    public CreatePetDTO(String name, Date birthDate, boolean hasPedigree, long breedId, long ownerId) {
         this.name = name;
-        this.age = age;
+        this.birthDate = birthDate;
         this.hasPedigree = hasPedigree;
-        this.breedUuid = breedUuid;
+        this.breedId = breedId;
+        this.ownerId = ownerId;
     }
 
     public CreatePetDTO() {
@@ -35,27 +41,35 @@ public class CreatePetDTO {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public boolean getHasPedigree() {
-        return hasPedigree;
-    }
-
     public void setHasPedigree(boolean hasPedigree) {
         this.hasPedigree = hasPedigree;
     }
 
-    public String getBreedUuid() {
-        return breedUuid;
+    public long getBreedId() {
+        return breedId;
     }
 
-    public void setBreedUuid(String breedUuid) {
-        this.breedUuid = breedUuid;
+    public void setBreedId(long breedId) {
+        this.breedId = breedId;
+    }
+
+    public boolean hasPedigree() {
+        return hasPedigree;
+    }
+
+    public Date getBirthDate() {
+        return this.birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 }

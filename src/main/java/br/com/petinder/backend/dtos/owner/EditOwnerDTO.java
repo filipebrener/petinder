@@ -2,12 +2,13 @@ package br.com.petinder.backend.dtos.owner;
 
 import br.com.petinder.backend.dtos.address.EditAddressDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class EditOwnerDTO {
 
-    @NotBlank(message = "É necessário informar o UUID")
-    private String uuid;
+    @NotNull(message = "É necessário informar o ID")
+    private long id;
 
     @NotBlank(message = "O nome não pode estar vazio!")
     private String name;
@@ -18,12 +19,12 @@ public class EditOwnerDTO {
 
     private EditAddressDTO address;
 
-    public String getUuid() {
-        return uuid;
+    public long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

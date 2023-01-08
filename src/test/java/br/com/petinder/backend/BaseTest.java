@@ -5,6 +5,7 @@ import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
+import br.com.petinder.backend.dtos.pet.CreatePetDTO;
 import br.com.petinder.backend.enums.PetType;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.services.BreedService;
@@ -13,6 +14,7 @@ import br.com.petinder.backend.services.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.Date;
 import java.util.UUID;
 
 public abstract class BaseTest {
@@ -36,6 +38,18 @@ public abstract class BaseTest {
 
     protected String cpf() {
         return new CpfHandlerService().cpf(false);
+    }
+
+    protected CreatePetDTO getCreatePetDto() throws AlreadyExistsException {
+        Owner owner = createOwner();
+        Breed breed = createBreed();
+        CreatePetDTO dto = new CreatePetDTO();
+        dto.setBirthDate(new Date());
+        dto.setOwnerId(owner.getId());
+        dto.setHasPedigree(true);
+        dto.setBreedId(breed.getId());
+        dto.setName("Maya");
+        return dto;
     }
 
     protected CreateBreedDTO getCreateBreedDto(){

@@ -7,5 +7,5 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
     long countByCpf(String cpf);
     long countByEmail(String email);
     long countByCelNumber(String celNumber);
-    Owner findByUuid(String uuid);
+
 }

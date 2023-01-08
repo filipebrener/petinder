@@ -5,7 +5,7 @@ import br.com.petinder.backend.enums.PetType;
 
 public class ResponseBreedDTO {
 
-    private String uuid;
+    private long id;
 
     private String name;
 
@@ -16,19 +16,19 @@ public class ResponseBreedDTO {
     public ResponseBreedDTO(Breed persistedBreed) {
         this.description = persistedBreed.getDescription();
         this.name = persistedBreed.getName();
-        this.uuid = persistedBreed.getUuid();
+        this.id = persistedBreed.getId();
         this.type = persistedBreed.getType();
     }
 
     public ResponseBreedDTO() {
     }
 
-    public String getUuid() {
-        return uuid;
+    public long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OwnerService {
@@ -50,15 +51,15 @@ public class OwnerService {
         return ownerRepository.save(newOwner);
     }
 
-    public void delete(String uuid) throws NotFoundException {
-        Owner owner = getByUuid(uuid);
+    public void delete(long id) throws NotFoundException {
+        Owner owner = findById(id);
         ownerRepository.delete(owner);
     }
 
-    public Owner getByUuid(String uuid) throws NotFoundException {
-        Owner owner = ownerRepository.findByUuid(uuid);
-        if(owner == null) throw new NotFoundException("Não foi possível encontrar o usuário com uuid: " + uuid);
-        return owner;
+    public Owner findById(long id) throws NotFoundException {
+        Optional<Owner> optionalOwner = ownerRepository.findById(id);
+        if(optionalOwner.isEmpty()) throw new NotFoundException("Não foi possível encontrar o usuário com id: " + id);
+        return optionalOwner.get();
     }
 
     public List<Owner> findAll() {
@@ -66,8 +67,7 @@ public class OwnerService {
     }
 
     public Owner edit(EditOwnerDTO dto) throws NotFoundException {
-        Owner owner = ownerRepository.findByUuid(dto.getUuid());
-        if(owner == null) throw new NotFoundException("Não foi possível encontrar o usuário com uuid: " + dto.getUuid());
+        Owner owner = findById(dto.getId());
         if(dto.getName() != null) owner.setName(dto.getName());
         if(dto.getCelNumber() != null) owner.setCelNumber(dto.getCelNumber());
         EditAddressDTO newAddressDto = dto.getAddress();

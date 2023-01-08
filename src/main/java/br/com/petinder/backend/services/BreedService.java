@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BreedService {
@@ -18,10 +19,10 @@ public class BreedService {
     @Autowired
     private BreedRepository breedRepository;
 
-    public Breed findByUuid(String breedUuid) throws NotFoundException {
-        Breed breed = breedRepository.findByUuid(breedUuid);
-        if (breed == null) throw new NotFoundException("Não foi possível encontrar uma raça com o uuid: " + breedUuid);
-        return breed;
+    public Breed findById(long id) throws NotFoundException {
+        Optional<Breed> optionalBreed = breedRepository.findById(id);
+        if (optionalBreed.isEmpty()) throw new NotFoundException("Não foi possível encontrar uma raça com o id: " + id);
+        return optionalBreed.get();
     }
 
     public Breed create(CreateBreedDTO dto) throws AlreadyExistsException {
@@ -38,8 +39,8 @@ public class BreedService {
         return errors;
     }
 
-    public void delete(String uuid) throws NotFoundException {
-        Breed breed = findByUuid(uuid);
+    public void delete(long id) throws NotFoundException {
+        Breed breed = findById(id);
         breedRepository.delete(breed);
     }
 
@@ -48,7 +49,7 @@ public class BreedService {
     }
 
     public Breed edit(EditBreedDTO dto) throws NotFoundException {
-        Breed breed = findByUuid(dto.getUuid());
+        Breed breed = findById(dto.getId());
         breed.setDescription(dto.getDescription());
         breed.setName(dto.getName());
         return breedRepository.save(breed);

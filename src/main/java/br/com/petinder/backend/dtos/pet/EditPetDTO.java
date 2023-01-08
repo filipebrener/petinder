@@ -3,39 +3,41 @@ package br.com.petinder.backend.dtos.pet;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Date;
+
 public class EditPetDTO {
 
-    @NotBlank
-    private String uuid;
+    @NotNull(message = "O id é obrigatório")
+    private long id;
 
-    @NotBlank
+    @NotBlank(message = "O nome é obrigatório")
     private String name;
 
-    @NotNull
-    private int age;
+    @NotNull(message = "A data de nascimento é obrigatório")
+    private Date birthDate;
 
-    @NotNull
+    @NotNull(message = "O campo que informa se tem pedigree é obrigatório")
     private boolean hasPedigree;
 
-    @NotBlank
-    private String breedUuid;
+    @NotBlank(message = "O id da raça é obrigatório")
+    private long breedId;
 
-    public EditPetDTO(String name, int age, boolean hasPedigree, String breedUuid) {
+    public EditPetDTO(String name, Date birthDate, boolean hasPedigree, long breedId) {
         this.name = name;
-        this.age = age;
+        this.birthDate = birthDate;
         this.hasPedigree = hasPedigree;
-        this.breedUuid = breedUuid;
+        this.breedId = breedId;
     }
 
     public EditPetDTO() {
     }
 
-    public String getUuid() {
-        return uuid;
+    public long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -46,15 +48,15 @@ public class EditPetDTO {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public boolean getHasPedigree() {
+    public boolean hasPedigree() {
         return hasPedigree;
     }
 
@@ -62,12 +64,12 @@ public class EditPetDTO {
         this.hasPedigree = hasPedigree;
     }
 
-    public String getBreedUuid() {
-        return breedUuid;
+    public long getBreedId() {
+        return breedId;
     }
 
-    public void setBreedUuid(String breedUuid) {
-        this.breedUuid = breedUuid;
+    public void setBreedUuid(long breedId) {
+        this.breedId = breedId;
     }
 
 

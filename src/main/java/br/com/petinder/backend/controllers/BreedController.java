@@ -30,15 +30,15 @@ public class BreedController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{uuid}")
-    public ResponseEntity<ResponseBreedDTO> get(@PathVariable("uuid") String uuid) throws NotFoundException {
-        Breed breed = breedService.findByUuid(uuid);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ResponseBreedDTO> get(@PathVariable("id") long id) throws NotFoundException {
+        Breed breed = breedService.findById(id);
         return new ResponseEntity<>(new ResponseBreedDTO(breed), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{uuid}")
-    public ResponseEntity<MessageDTO> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
-        breedService.delete(uuid);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<MessageDTO> delete(@PathVariable("id") long id) throws NotFoundException {
+        breedService.delete(id);
         return new ResponseEntity<>(new MessageDTO("Raça apagada com sucesso!"), HttpStatus.OK);
     }
 

@@ -9,6 +9,7 @@ import br.com.petinder.backend.dtos.breed.ResponseBreedDTO;
 import br.com.petinder.backend.dtos.errors.ErrorsListDTO;
 import br.com.petinder.backend.dtos.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
+import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.BreedRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +37,7 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void createBreedSuccessfully(){
+    public void createBreedSuccessfully() throws NotFoundException {
         CreateBreedDTO dto = getCreateBreedDto();
         String breedNameInUpperCase = "BORDER COLLIE";
         String breedNameCapitalized = "Border collie";
@@ -49,7 +51,7 @@ public class BreedControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        Breed persistedBreed = breedRepository.findByUuid(response.getUuid());
+        Breed persistedBreed = breedService.findById(response.getId());
         assertNotNull(persistedBreed);
         assertEquals(dto.getDescription(), persistedBreed.getDescription());
         assertEquals(
@@ -82,7 +84,7 @@ public class BreedControllerTest extends BaseTest {
     public void deleteBreedSuccessfully() throws AlreadyExistsException {
         Breed breed = createBreed();
         MessageDTO response = webTestClient.delete()
-                .uri("/breed/delete/" + breed.getUuid())
+                .uri("/breed/delete/" + breed.getId())
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(MessageDTO.class)
@@ -91,7 +93,7 @@ public class BreedControllerTest extends BaseTest {
 
         assertNotNull(response);
         assertEquals("Raça apagada com sucesso!", response.getMessage());
-        assertNull(breedRepository.findByUuid(breed.getUuid()));
+        assertTrue(breedRepository.findById(breed.getId()).isEmpty());
     }
 
     @Test
@@ -108,7 +110,9 @@ public class BreedControllerTest extends BaseTest {
                 .expectBody(ResponseBreedDTO.class)
                 .returnResult().getResponseBody();
 
-        Breed persistedBreed = breedRepository.findByUuid(breed.getUuid());
+        Optional<Breed> optionalPersistedBreed = breedRepository.findById(breed.getId());
+        assertFalse(optionalPersistedBreed.isEmpty());
+        Breed persistedBreed = optionalPersistedBreed.get();
         assertNotNull(persistedBreed);
         assertNotNull(response);
         assertEquals(newName, response.getName());
@@ -129,7 +133,9 @@ public class BreedControllerTest extends BaseTest {
                 .expectBody(ResponseBreedDTO.class)
                 .returnResult().getResponseBody();
 
-        Breed persistedBreed = breedRepository.findByUuid(breed.getUuid());
+        Optional<Breed> optionalPersistedBreed = breedRepository.findById(breed.getId());
+        assertFalse(optionalPersistedBreed.isEmpty());
+        Breed persistedBreed = optionalPersistedBreed.get();
         assertNotNull(persistedBreed);
         assertNotNull(response);
         assertEquals(newDescription, response.getDescription());
@@ -140,7 +146,8 @@ public class BreedControllerTest extends BaseTest {
     public void editNonExistingBreed(){
         EditBreedDTO requestBody = new EditBreedDTO();
         String uuid = uuid();
-        requestBody.setUuid(uuid);
+        long id = 1234;
+        requestBody.setId(id);
         requestBody.setName("nome: " + uuid);
         requestBody.setDescription("descrição: " + uuid);
         ErrorsListDTO response = webTestClient.put()
@@ -152,21 +159,21 @@ public class BreedControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals("Não foi possível encontrar uma raça com o uuid: " + uuid, response.getMessage());
+        assertEquals("Não foi possível encontrar uma raça com o id: " + id, response.getMessage());
     }
 
     @Test
     public void deleteNonExistingBreed(){
-        String uuid = uuid();
+        long id = 1234;
         ErrorsListDTO response = webTestClient.delete()
-                .uri("/breed/delete/" + uuid)
+                .uri("/breed/delete/" + id)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
                 .expectBody(ErrorsListDTO.class)
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals("Não foi possível encontrar uma raça com o uuid: " + uuid, response.getMessage());
+        assertEquals("Não foi possível encontrar uma raça com o id: " + id, response.getMessage());
     }
 
     @Test
@@ -181,7 +188,7 @@ public class BreedControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(3, response.size());
+        assertEquals(2, response.size());
     }
 
     @Test

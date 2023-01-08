@@ -11,6 +11,7 @@ import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.owner.EditOwnerDTO;
 import br.com.petinder.backend.dtos.owner.ResponseOwnerDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
+import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.OwnerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,7 +39,7 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     @Test
-    public void createOwnerWithAddressSuccessfully(){
+    public void createOwnerWithAddressSuccessfully() throws NotFoundException {
         CreateOwnerDTO dto = getCreateOwnerDTOWithAddress();
         ResponseOwnerDTO response = webTestClient.post()
                 .uri("/owner/create")
@@ -49,12 +51,12 @@ public class OwnerControllerTest extends BaseTest {
                 .getResponseBody();
 
         assertNotNull(response);
-        Owner persistedOwner = ownerRepository.findByUuid(response.getUuid());
+        Owner persistedOwner = ownerService.findById(response.getId());
         assertAllOwnerFields(persistedOwner, dto);
     }
 
     @Test
-    public void createOwnerWithoutAddressSuccessfully(){
+    public void createOwnerWithoutAddressSuccessfully() throws NotFoundException {
         CreateOwnerDTO dto = getCreateOwnerDTOWithoutAddress();
         ResponseOwnerDTO response = webTestClient.post()
                 .uri("/owner/create")
@@ -66,7 +68,7 @@ public class OwnerControllerTest extends BaseTest {
                 .getResponseBody();
 
         assertNotNull(response);
-        Owner persistedOwner = ownerRepository.findByUuid(response.getUuid());
+        Owner persistedOwner = ownerService.findById(response.getId());
         assertOwnerDetails(persistedOwner, dto);
         assertNull(persistedOwner.getAddress());
         assertNull(dto.getAddress());
@@ -141,7 +143,7 @@ public class OwnerControllerTest extends BaseTest {
         String newCelNumber = "+5538999810408";
         Owner peresistedOwner = createOwner();
         EditOwnerDTO dto = new EditOwnerDTO();
-        dto.setUuid(peresistedOwner.getUuid());
+        dto.setId(peresistedOwner.getId());
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
         webTestClient.put()
@@ -150,7 +152,9 @@ public class OwnerControllerTest extends BaseTest {
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(ResponseOwnerDTO.class);
-        Owner editedOwner = ownerRepository.findByUuid(peresistedOwner.getUuid());
+        Optional<Owner> optionalEditedOwner = ownerRepository.findById(peresistedOwner.getId());
+        assertFalse(optionalEditedOwner.isEmpty());
+        Owner editedOwner = optionalEditedOwner.get();
         assertEquals(newName, editedOwner.getName());
         assertEquals(newCelNumber, editedOwner.getCelNumber());
     }
@@ -158,7 +162,7 @@ public class OwnerControllerTest extends BaseTest {
     public void deleteOwnerTest() throws AlreadyExistsException {
         Owner owner = createOwner();
         MessageDTO response = webTestClient.delete()
-                .uri("/owner/delete/" + owner.getUuid())
+                .uri("/owner/delete/" + owner.getId())
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(MessageDTO.class)
@@ -167,7 +171,7 @@ public class OwnerControllerTest extends BaseTest {
 
         assertNotNull(response);
         assertEquals("Usuário apagado com sucesso!", response.getMessage());
-        assertNull(ownerRepository.findByUuid(owner.getUuid()));
+        assertTrue(ownerRepository.findById(owner.getId()).isEmpty());
     }
 
     @Test
@@ -175,7 +179,7 @@ public class OwnerControllerTest extends BaseTest {
         String newName = "Filipe Brenner";
         String newCelNumber = "+5538999810408";
         EditOwnerDTO dto = new EditOwnerDTO();
-        dto.setUuid(uuid());
+        dto.setId(1234);
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
         ErrorsListDTO response = webTestClient.put()
@@ -191,9 +195,8 @@ public class OwnerControllerTest extends BaseTest {
 
     @Test
     public void deleteNonExistingOwnerTest(){
-        String uuid = uuid();
         ErrorsListDTO response = webTestClient.delete()
-                .uri("/owner/delete/" + uuid)
+                .uri("/owner/delete/" + 1234)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
                 .expectBody(ErrorsListDTO.class)
@@ -214,7 +217,7 @@ public class OwnerControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(3, response.size());
+        assertEquals(2, response.size());
     }
 
     @Test

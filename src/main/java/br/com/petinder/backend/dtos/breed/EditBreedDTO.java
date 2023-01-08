@@ -2,11 +2,12 @@ package br.com.petinder.backend.dtos.breed;
 
 import br.com.petinder.backend.domains.Breed;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class EditBreedDTO {
 
-    @NotBlank(message = "O uuid não pode ficar em branco")
-    private String uuid;
+    @NotNull(message = "O uuid não pode ficar em branco")
+    private long id;
 
     @NotBlank(message = "A raça não pode ficar em branco")
     private String name;
@@ -14,27 +15,27 @@ public class EditBreedDTO {
     @NotBlank(message = "A descrição não pode ficar em branco")
     private String description;
 
-    public EditBreedDTO(String name, String description, String uuid) {
+    public EditBreedDTO(String name, String description, long id) {
         this.name = name;
         this.description = description;
-        this.uuid = uuid;
+        this.id = id;
     }
 
     public EditBreedDTO() {
     }
 
     public EditBreedDTO(Breed breed) {
-        this.uuid = breed.getUuid();
+        this.id = breed.getId();
         this.name = breed.getName();
         this.description = breed.getDescription();
     }
 
-    public String getUuid() {
-        return uuid;
+    public long getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

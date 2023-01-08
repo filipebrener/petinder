@@ -30,15 +30,15 @@ public class OwnerController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{uuid}")
-    public ResponseEntity<ResponseOwnerDTO> get(@PathVariable("uuid") String uuid) throws NotFoundException {
-        Owner owner = ownerService.getByUuid(uuid);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ResponseOwnerDTO> get(@PathVariable("id") long id) throws NotFoundException {
+        Owner owner = ownerService.findById(id);
         return new ResponseEntity<>(new ResponseOwnerDTO(owner), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{uuid}")
-    public ResponseEntity<MessageDTO> delete(@PathVariable("uuid") String uuid) throws NotFoundException {
-        ownerService.delete(uuid);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<MessageDTO> delete(@PathVariable("id") long id) throws NotFoundException {
+        ownerService.delete(id);
         return new ResponseEntity<>(new MessageDTO("Usuário apagado com sucesso!"), HttpStatus.OK);
     }
 

@@ -12,15 +12,15 @@ import org.springframework.util.StringUtils;
 public class Breed extends BaseDomain{
 
     @NotBlank
-    @Column(name = "name", unique = true)
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     @NotBlank
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
-    @Column(name = "type")
+    @Column(name = "type", nullable = false)
     private PetType type;
 
     public Breed(String name, String description, PetType type) {

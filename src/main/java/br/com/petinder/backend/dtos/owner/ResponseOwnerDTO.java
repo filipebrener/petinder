@@ -7,8 +7,6 @@ public class ResponseOwnerDTO {
 
     private long id;
 
-    private String uuid;
-
     private String cpf;
 
     private String name;
@@ -21,7 +19,6 @@ public class ResponseOwnerDTO {
 
     public ResponseOwnerDTO(Owner owner) {
         this.id = owner.getId();
-        this.uuid = owner.getUuid();
         this.name = owner.getName();
         this.cpf = owner.getCpf();
         this.email = owner.getEmail();
@@ -46,14 +43,6 @@ public class ResponseOwnerDTO {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getName() {

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,20 +13,25 @@ import java.util.List;
 public class Pet extends BaseDomain {
 
     @NotBlank
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
-    @Column(name = "age")
-    private int age;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birth_date", nullable = false)
+    private Date birthDate;
 
     @NotNull
-    @Column(name = "has_pedigree")
+    @Column(name = "has_pedigree", nullable = false)
     private boolean hasPedigree;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "breed_id", referencedColumnName = "id")
+    @JoinColumn(name = "breed_id", referencedColumnName = "id", nullable = false)
     private Breed breed;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    private Owner owner;
 
     @OneToMany
     private List<Pet> likes;
@@ -33,9 +39,9 @@ public class Pet extends BaseDomain {
     @OneToMany
     private List<Pet> matches;
 
-    public Pet(String name, int age, boolean hasPedigree, Breed breed) {
+    public Pet(String name, Date birthDate, boolean hasPedigree, Breed breed) {
         this.name = name;
-        this.age = age;
+        this.birthDate = birthDate;
         this.hasPedigree = hasPedigree;
         this.breed = breed;
     }
@@ -45,8 +51,16 @@ public class Pet extends BaseDomain {
 
     public Pet(CreatePetDTO dto) {
         this.name = dto.getName();
-        this.age = dto.getAge();
-        this.hasPedigree = dto.getHasPedigree();
+        this.birthDate = dto.getBirthDate();
+        this.hasPedigree = dto.hasPedigree();
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public String getName() {
@@ -57,15 +71,15 @@ public class Pet extends BaseDomain {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public boolean getHasPedigree() {
+    public boolean hasPedigree() {
         return hasPedigree;
     }
 
