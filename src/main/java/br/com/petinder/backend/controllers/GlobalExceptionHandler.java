@@ -1,8 +1,8 @@
 package br.com.petinder.backend.controllers;
 
-import br.com.petinder.backend.dtos.errors.ErrorMessage;
-import br.com.petinder.backend.dtos.errors.FieldErrorsMessageDTO;
-import br.com.petinder.backend.dtos.errors.ErrorsListDTO;
+import br.com.petinder.backend.dtos.response.errors.ErrorMessage;
+import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
+import br.com.petinder.backend.dtos.response.errors.ErrorsListDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;

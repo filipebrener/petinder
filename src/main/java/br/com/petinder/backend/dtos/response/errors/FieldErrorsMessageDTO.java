@@ -1,4 +1,4 @@
-package br.com.petinder.backend.dtos.errors;
+package br.com.petinder.backend.dtos.response.errors;
 
 import java.util.List;
 

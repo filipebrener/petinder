@@ -1,5 +1,6 @@
 package br.com.petinder.backend.dtos.pet;
 
+import br.com.petinder.backend.domains.Pet;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,7 +20,7 @@ public class EditPetDTO {
     @NotNull(message = "O campo que informa se tem pedigree é obrigatório")
     private boolean hasPedigree;
 
-    @NotBlank(message = "O id da raça é obrigatório")
+    @NotNull(message = "O id da raça é obrigatório")
     private long breedId;
 
     public EditPetDTO(String name, Date birthDate, boolean hasPedigree, long breedId) {
@@ -30,6 +31,13 @@ public class EditPetDTO {
     }
 
     public EditPetDTO() {
+    }
+
+    public EditPetDTO(Pet pet) {
+        this.id = pet.getId();
+        this.name = pet.getName();
+        this.birthDate = pet.getBirthDate();
+        this.breedId = pet.getBreed().getId();
     }
 
     public long getId() {
@@ -68,7 +76,7 @@ public class EditPetDTO {
         return breedId;
     }
 
-    public void setBreedUuid(long breedId) {
+    public void setBreedId(long breedId) {
         this.breedId = breedId;
     }
 

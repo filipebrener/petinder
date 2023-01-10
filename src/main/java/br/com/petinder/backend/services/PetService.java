@@ -9,6 +9,7 @@ import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.PetRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +19,13 @@ public class PetService {
     private final PetRepository petRepository;
     private final BreedService breedService;
     private final OwnerService ownerService;
+    private final SettingService settingService;
 
-    public PetService(PetRepository petRepository, BreedService breedService, OwnerService ownerService) {
+    public PetService(PetRepository petRepository, BreedService breedService, OwnerService ownerService, SettingService settingService) {
         this.petRepository = petRepository;
         this.breedService = breedService;
         this.ownerService = ownerService;
+        this.settingService = settingService;
     }
 
     public Pet create(CreatePetDTO requestDTO) throws NotFoundException {
@@ -36,7 +39,7 @@ public class PetService {
 
     public Pet findById(long id) throws NotFoundException {
         Optional<Pet> optionalPet = petRepository.findById(id);
-        if (optionalPet.isEmpty()) throw new NotFoundException("Não foi possível encontrar um pet com o uuid: " + id);
+        if (optionalPet.isEmpty()) throw new NotFoundException("Não foi possível encontrar um pet com o id: " + id);
         return optionalPet.get();
     }
 
@@ -57,5 +60,11 @@ public class PetService {
         Breed breed = breedService.findById(dto.getBreedId());
         pet.setBreed(breed);
         return petRepository.save(pet);
+    }
+
+    public String getBirthDateFormatted(Pet pet){
+        String format = settingService.getDateFormatSettingValue("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.format(pet.getBirthDate());
     }
 }

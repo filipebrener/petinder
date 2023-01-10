@@ -1,5 +1,7 @@
 package br.com.petinder.backend.dtos.pet;
 
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,7 +12,8 @@ public class CreatePetDTO {
     @NotBlank(message = "O nome não pode ficar em branco!")
     private String name;
 
-    @NotNull(message = "É necessário informar a idade!")
+    @Temporal(TemporalType.DATE)
+    @NotNull(message = "É necessário informar a data de nascimento!")
     private Date birthDate;
 
     @NotNull(message = "É necessário informar se tem pedigree!")
@@ -58,7 +61,7 @@ public class CreatePetDTO {
     }
 
     public Date getBirthDate() {
-        return this.birthDate;
+        return birthDate;
     }
 
     public void setBirthDate(Date birthDate) {

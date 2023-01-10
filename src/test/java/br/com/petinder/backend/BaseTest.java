@@ -2,15 +2,18 @@ package br.com.petinder.backend;
 
 import br.com.petinder.backend.domains.Breed;
 import br.com.petinder.backend.domains.Owner;
+import br.com.petinder.backend.domains.Pet;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.pet.CreatePetDTO;
 import br.com.petinder.backend.enums.PetType;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
+import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.services.BreedService;
 import br.com.petinder.backend.services.CpfHandlerService;
 import br.com.petinder.backend.services.OwnerService;
+import br.com.petinder.backend.services.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -27,6 +30,13 @@ public abstract class BaseTest {
 
     @Autowired
     protected BreedService breedService;
+
+    @Autowired
+    protected PetService petService;
+
+    protected Pet createPet() throws AlreadyExistsException, NotFoundException {
+        return petService.create(getCreatePetDto());
+    }
 
     protected Owner createOwner() throws AlreadyExistsException {
         return ownerService.create(getCreateOwnerDTOWithAddress());

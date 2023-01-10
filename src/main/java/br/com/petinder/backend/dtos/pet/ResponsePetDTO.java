@@ -59,7 +59,7 @@ public class ResponsePetDTO {
         this.age = age;
     }
 
-    public boolean isHasPedigree() {
+    public boolean hasPedigree() {
         return hasPedigree;
     }
 

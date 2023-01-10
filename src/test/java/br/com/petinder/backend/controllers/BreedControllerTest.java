@@ -2,12 +2,12 @@ package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.BaseTest;
 import br.com.petinder.backend.domains.Breed;
-import br.com.petinder.backend.dtos.MessageDTO;
+import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.breed.EditBreedDTO;
 import br.com.petinder.backend.dtos.breed.ResponseBreedDTO;
-import br.com.petinder.backend.dtos.errors.ErrorsListDTO;
-import br.com.petinder.backend.dtos.errors.FieldErrorsMessageDTO;
+import br.com.petinder.backend.dtos.response.errors.ErrorsListDTO;
+import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.BreedRepository;

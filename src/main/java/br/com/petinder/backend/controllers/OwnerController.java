@@ -1,7 +1,7 @@
 package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.domains.Owner;
-import br.com.petinder.backend.dtos.MessageDTO;
+import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.owner.EditOwnerDTO;
 import br.com.petinder.backend.dtos.owner.ResponseOwnerDTO;

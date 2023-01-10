@@ -1,7 +1,7 @@
 package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.domains.Breed;
-import br.com.petinder.backend.dtos.MessageDTO;
+import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.breed.EditBreedDTO;
 import br.com.petinder.backend.dtos.breed.ResponseBreedDTO;

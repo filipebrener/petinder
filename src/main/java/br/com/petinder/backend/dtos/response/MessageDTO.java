@@ -1,4 +1,4 @@
-package br.com.petinder.backend.dtos;
+package br.com.petinder.backend.dtos.response;
 
 public class MessageDTO {
     private String message;

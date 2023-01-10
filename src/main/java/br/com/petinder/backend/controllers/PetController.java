@@ -1,7 +1,7 @@
 package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.domains.Pet;
-import br.com.petinder.backend.dtos.MessageDTO;
+import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.pet.CreatePetDTO;
 import br.com.petinder.backend.dtos.pet.EditPetDTO;
 import br.com.petinder.backend.dtos.pet.ResponsePetDTO;
@@ -39,7 +39,7 @@ public class PetController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<MessageDTO> delete(@PathVariable("id") long id) throws NotFoundException {
         petService.delete(id);
-        return new ResponseEntity<>(new MessageDTO("Usuário apagado com sucesso!"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Pet apagado com sucesso!"), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")
