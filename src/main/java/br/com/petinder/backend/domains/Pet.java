@@ -1,13 +1,10 @@
 package br.com.petinder.backend.domains;
 
 import br.com.petinder.backend.dtos.pet.CreatePetDTO;
-import br.com.petinder.backend.services.SettingService;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
