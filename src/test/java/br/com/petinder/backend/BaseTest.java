@@ -3,17 +3,16 @@ package br.com.petinder.backend;
 import br.com.petinder.backend.domains.Breed;
 import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.domains.Pet;
+import br.com.petinder.backend.domains.Setting;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
 import br.com.petinder.backend.dtos.pet.CreatePetDTO;
+import br.com.petinder.backend.dtos.setting.CreateSettingDto;
 import br.com.petinder.backend.enums.PetType;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
-import br.com.petinder.backend.services.BreedService;
-import br.com.petinder.backend.services.CpfHandlerService;
-import br.com.petinder.backend.services.OwnerService;
-import br.com.petinder.backend.services.PetService;
+import br.com.petinder.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -34,6 +33,9 @@ public abstract class BaseTest {
     @Autowired
     protected PetService petService;
 
+    @Autowired
+    protected SettingService settingService;
+
     protected Pet createPet() throws AlreadyExistsException, NotFoundException {
         return petService.create(getCreatePetDto());
     }
@@ -44,6 +46,10 @@ public abstract class BaseTest {
 
     protected Breed createBreed() throws AlreadyExistsException {
         return breedService.create(getCreateBreedDto());
+    }
+
+    protected Setting createSetting() throws AlreadyExistsException {
+        return settingService.create(getCreateSettingDto());
     }
 
     protected String cpf() {
@@ -91,6 +97,13 @@ public abstract class BaseTest {
         address.setNeighborhood("Novo Río");
         dto.setAddress(address);
         return dto;
+    }
+
+    protected CreateSettingDto getCreateSettingDto(){
+        CreateSettingDto setting = new CreateSettingDto();
+        setting.setCode("setting code");
+        setting.setValue("setting value");
+        return setting;
     }
 
     protected String uuid(){

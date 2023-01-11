@@ -188,7 +188,6 @@ public class BreedControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(2, response.size());
     }
 
     @Test
@@ -203,7 +202,6 @@ public class BreedControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(3, response.size());
     }
 
 

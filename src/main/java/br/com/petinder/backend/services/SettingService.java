@@ -48,7 +48,7 @@ public class SettingService {
 
     public Setting findById(long id) throws NotFoundException {
         Optional<Setting> existingSetting = settingRepository.findById(id);
-        if(existingSetting.isEmpty()) throw new NotFoundException("Não foi possível encontrar uma Setting com o id: " + id);
+        if(existingSetting.isEmpty()) throw new NotFoundException("Não foi possível encontrar uma configuração com o id: " + id);
         return existingSetting.get();
     }
 

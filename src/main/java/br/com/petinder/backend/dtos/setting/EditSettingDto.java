@@ -1,5 +1,6 @@
 package br.com.petinder.backend.dtos.setting;
 
+import br.com.petinder.backend.domains.Setting;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -21,6 +22,12 @@ public class EditSettingDto {
     }
 
     public EditSettingDto() {
+    }
+
+    public EditSettingDto(Setting setting) {
+        this.id = setting.getId();
+        this.value = setting.getValue();
+        this.code = setting.getCode();
     }
 
     public Long getId() {

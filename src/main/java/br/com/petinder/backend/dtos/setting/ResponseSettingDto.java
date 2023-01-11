@@ -19,6 +19,7 @@ public class ResponseSettingDto {
     }
 
     public ResponseSettingDto(Setting persistedSetting) {
+        this.id = persistedSetting.getId();
         this.code = persistedSetting.getCode();
         this.value = persistedSetting.getValue();
     }
