@@ -37,29 +37,23 @@ public class PetService {
         return petRepository.save(pet);
     }
 
-    public Pet findById(long id) throws NotFoundException {
+    public Pet findById(Long id) throws NotFoundException {
         Optional<Pet> optionalPet = petRepository.findById(id);
         if (optionalPet.isEmpty()) throw new NotFoundException("Não foi possível encontrar um pet com o id: " + id);
         return optionalPet.get();
-    }
-
-    public void delete(long id) throws NotFoundException {
-        Pet pet = findById(id);
-        petRepository.delete(pet);
     }
 
     public List<Pet> findAll() {
         return petRepository.findAll().stream().toList();
     }
 
-    public Pet edit(EditPetDTO dto) throws NotFoundException {
-        Pet pet = findById(dto.getId());
-        pet.setBirthDate(dto.getBirthDate());
-        pet.setHasPedigree(dto.hasPedigree());
-        pet.setName(dto.getName());
+    public Pet edit(EditPetDTO dto, Pet petToEdit) throws NotFoundException {
+        petToEdit.setBirthDate(dto.getBirthDate());
+        petToEdit.setHasPedigree(dto.hasPedigree());
+        petToEdit.setName(dto.getName());
         Breed breed = breedService.findById(dto.getBreedId());
-        pet.setBreed(breed);
-        return petRepository.save(pet);
+        petToEdit.setBreed(breed);
+        return petRepository.save(petToEdit);
     }
 
     public String getBirthDateFormatted(Pet pet){

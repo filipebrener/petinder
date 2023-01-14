@@ -26,18 +26,17 @@ public class BreedController {
     @PostMapping("/create")
     public ResponseEntity<ResponseBreedDTO> create(@RequestBody @Valid CreateBreedDTO requestDTO) throws AlreadyExistsException, NotFoundException {
         Breed persistedBreed = breedService.create(requestDTO);
-        ResponseBreedDTO responseDTO = new ResponseBreedDTO(persistedBreed);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseBreedDTO(persistedBreed), HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ResponseBreedDTO> get(@PathVariable("id") long id) throws NotFoundException {
+    public ResponseEntity<ResponseBreedDTO> get(@PathVariable("id") Long id) throws NotFoundException {
         Breed breed = breedService.findById(id);
         return new ResponseEntity<>(new ResponseBreedDTO(breed), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<MessageDTO> delete(@PathVariable("id") long id) throws NotFoundException {
+    public ResponseEntity<MessageDTO> delete(@PathVariable("id") Long id) throws NotFoundException {
         breedService.delete(id);
         return new ResponseEntity<>(new MessageDTO("Raça apagada com sucesso!"), HttpStatus.OK);
     }

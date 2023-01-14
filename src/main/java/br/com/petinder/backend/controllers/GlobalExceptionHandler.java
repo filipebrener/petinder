@@ -1,10 +1,11 @@
 package br.com.petinder.backend.controllers;
 
-import br.com.petinder.backend.dtos.response.errors.ErrorMessage;
+import br.com.petinder.backend.dtos.response.errors.ErrorMessageDto;
 import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.dtos.response.errors.ErrorsListDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
+import br.com.petinder.backend.exceptions.CustomForbiddenRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,9 +40,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleNotFoundException(
+    public ResponseEntity<ErrorMessageDto> handleNotFoundException(
             NotFoundException ex) {
-        return new ResponseEntity<>(new ErrorMessage(ex.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorMessageDto(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CustomForbiddenRequestException.class)
+    public ResponseEntity<ErrorMessageDto> handleCustomForbiddenRequestException(
+            CustomForbiddenRequestException ex){
+        return new ResponseEntity<>(new ErrorMessageDto(ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
 }

@@ -4,8 +4,8 @@ import java.util.List;
 
 public class AlreadyExistsException extends Throwable {
 
-    private String message;
-    private List<String> errors;
+    private final String message;
+    private final List<String> errors;
     public AlreadyExistsException(String message, List<String> errors) {
         this.message = message;
         this.errors = errors;

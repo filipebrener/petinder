@@ -9,7 +9,7 @@ public abstract class BaseDomain implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY) @Column(name="id")
-    private long id;
+    private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_at", nullable=false, updatable=false)
@@ -22,7 +22,7 @@ public abstract class BaseDomain implements Serializable {
         }
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

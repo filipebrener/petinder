@@ -4,12 +4,12 @@ import br.com.petinder.backend.domains.Setting;
 
 public class ResponseSettingDto {
 
-    private long id;
+    private Long id;
     private String value;
 
     private String code;
 
-    public ResponseSettingDto(long id, String value, String code) {
+    public ResponseSettingDto(Long id, String value, String code) {
         this.id = id;
         this.value = value;
         this.code = code;
@@ -24,11 +24,11 @@ public class ResponseSettingDto {
         this.value = persistedSetting.getValue();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

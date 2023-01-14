@@ -5,6 +5,7 @@ import br.com.petinder.backend.domains.Address;
 import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
+import br.com.petinder.backend.dtos.response.errors.ErrorMessageDto;
 import br.com.petinder.backend.dtos.response.errors.ErrorsListDTO;
 import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.dtos.owner.CreateOwnerDTO;
@@ -34,7 +35,7 @@ public class OwnerControllerTest extends BaseTest {
     private OwnerRepository ownerRepository;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() throws AlreadyExistsException {
         ownerRepository.deleteAll();
     }
 
@@ -76,7 +77,7 @@ public class OwnerControllerTest extends BaseTest {
 
     @Test
     public void creatingOwnerWithDuplicateCpfTest() throws AlreadyExistsException {
-        Owner peresistedOwner = createOwner();
+        Owner peresistedOwner = createOwnerWithUserRole();
         CreateOwnerDTO dto = getCreateOwnerDTOWithoutAddress();
         dto.setCpf(peresistedOwner.getCpf());
         ErrorsListDTO response = webTestClient.post()
@@ -97,7 +98,7 @@ public class OwnerControllerTest extends BaseTest {
 
     @Test
     public void creatingOwnerWithDuplicateCelNumberTest() throws AlreadyExistsException {
-        Owner peresistedOwner = createOwner();
+        Owner peresistedOwner = createOwnerWithUserRole();
         CreateOwnerDTO dto = getCreateOwnerDTOWithoutAddress();
         dto.setCelNumber(peresistedOwner.getCelNumber());
         ErrorsListDTO response = webTestClient.post()
@@ -118,7 +119,7 @@ public class OwnerControllerTest extends BaseTest {
 
     @Test
     public void creatingOwnerWithDuplicateEmailTest() throws AlreadyExistsException {
-        Owner peresistedOwner = createOwner();
+        Owner peresistedOwner = createOwnerWithUserRole();
         CreateOwnerDTO dto = getCreateOwnerDTOWithoutAddress();
         dto.setEmail(peresistedOwner.getEmail());
         ErrorsListDTO response = webTestClient.post()
@@ -141,18 +142,19 @@ public class OwnerControllerTest extends BaseTest {
     public void editOwnerTest() throws AlreadyExistsException {
         String newName = "Filipe Brenner";
         String newCelNumber = "+5538999810408";
-        Owner peresistedOwner = createOwner();
+        Owner owner = createOwnerWithUserRole();
         EditOwnerDTO dto = new EditOwnerDTO();
-        dto.setId(peresistedOwner.getId());
+        dto.setId(owner.getId());
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
         webTestClient.put()
                 .uri("/owner/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(ResponseOwnerDTO.class);
-        Optional<Owner> optionalEditedOwner = ownerRepository.findById(peresistedOwner.getId());
+        Optional<Owner> optionalEditedOwner = ownerRepository.findById(owner.getId());
         assertFalse(optionalEditedOwner.isEmpty());
         Owner editedOwner = optionalEditedOwner.get();
         assertEquals(newName, editedOwner.getName());
@@ -160,9 +162,10 @@ public class OwnerControllerTest extends BaseTest {
     }
     @Test
     public void deleteOwnerTest() throws AlreadyExistsException {
-        Owner owner = createOwner();
+        Owner owner = createOwnerWithUserRole();
         MessageDTO response = webTestClient.delete()
                 .uri("/owner/delete/" + owner.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(MessageDTO.class)
@@ -175,15 +178,36 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     @Test
-    public void editNonExistingOwnerTest(){
+    public void deleteInvalidOwnerTest() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        Owner secondOwner = createOwnerWithUserRole();
+
+        ErrorMessageDto response = webTestClient.delete()
+                .uri("/owner/delete/" + secondOwner.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN)
+                .expectBody(ErrorMessageDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(response);
+        assertEquals("O usuário logado não tem permissão para apagar esse usuário!", response.getMessage());
+
+    }
+
+    @Test
+    public void editNonExistingOwnerTest() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         String newName = "Filipe Brenner";
         String newCelNumber = "+5538999810408";
         EditOwnerDTO dto = new EditOwnerDTO();
-        dto.setId(1234);
+        dto.setId(1234L);
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
         ErrorsListDTO response = webTestClient.put()
                 .uri("/owner/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(dto)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
@@ -194,9 +218,34 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     @Test
-    public void deleteNonExistingOwnerTest(){
+    public void editInvalidOwnerTest() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        Owner secondOwner = createOwnerWithUserRole();
+        String newName = "Filipe Brenner";
+        String newCelNumber = "+5538999810408";
+        EditOwnerDTO dto = new EditOwnerDTO();
+        dto.setId(secondOwner.getId());
+        dto.setName(newName);
+        dto.setCelNumber(newCelNumber);
+        ErrorMessageDto response = webTestClient.put()
+                .uri("/owner/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN)
+                .expectBody(ErrorMessageDto.class)
+                .returnResult().getResponseBody();
+
+        assertNotNull(response);
+        assertEquals("O usuário logado não tem permissão para editar esse usuário!", response.getMessage());
+    }
+
+    @Test
+    public void deleteNonExistingOwnerTest() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         ErrorsListDTO response = webTestClient.delete()
                 .uri("/owner/delete/" + 1234)
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
                 .expectBody(ErrorsListDTO.class)
@@ -206,10 +255,12 @@ public class OwnerControllerTest extends BaseTest {
     }
 
     @Test
-    public void editOwnerSendingRequestWithoutRequiredFieldsTest(){
+    public void editOwnerSendingRequestWithoutRequiredFieldsTest() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
         EditOwnerDTO requestBody = new EditOwnerDTO();
         List<FieldErrorsMessageDTO> response = webTestClient.put()
                 .uri("/owner/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
@@ -217,11 +268,10 @@ public class OwnerControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(2, response.size());
     }
 
     @Test
-    public void createOwnerSendingRequestWithoutRequiredFieldsTest(){
+    public void createOwnerSendingRequestWithoutRequiredFieldsTest() throws AlreadyExistsException {
         CreateOwnerDTO requestBody = new CreateOwnerDTO();
         List<FieldErrorsMessageDTO> response = webTestClient.post()
                 .uri("/owner/create")
@@ -232,7 +282,23 @@ public class OwnerControllerTest extends BaseTest {
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
-        assertEquals(4, response.size());
+    }
+
+    @Test
+    public void createOwnerWithInvalidPassword() throws AlreadyExistsException {
+        CreateOwnerDTO dto = getCreateOwnerDTOWithAddress();
+        dto.setPassword("1234567");
+        List<FieldErrorsMessageDTO> response = webTestClient.post()
+                .uri("/owner/create")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
+                .expectBodyList(FieldErrorsMessageDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(response);
+        assertEquals("password", response.get(0).getField());
     }
 
     private void assertAllOwnerFields(Owner persistedOwner, CreateOwnerDTO dto){

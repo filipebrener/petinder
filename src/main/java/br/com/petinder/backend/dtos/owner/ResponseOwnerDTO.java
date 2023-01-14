@@ -5,7 +5,7 @@ import br.com.petinder.backend.dtos.address.ResponseAddressDTO;
 
 public class ResponseOwnerDTO {
 
-    private long id;
+    private Long id;
 
     private String cpf;
 
@@ -37,11 +37,11 @@ public class ResponseOwnerDTO {
         this.cpf = cpf;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

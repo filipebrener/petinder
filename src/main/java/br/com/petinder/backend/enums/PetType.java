@@ -4,7 +4,7 @@ public enum PetType {
 
     DOG("cachorro"), CAT("gato");
 
-    private String value;
+    private final String value;
 
     PetType(String value){
         this.value = value;

@@ -1,9 +1,10 @@
 package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.BaseTest;
+import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.domains.Setting;
 import br.com.petinder.backend.dtos.response.MessageDTO;
-import br.com.petinder.backend.dtos.response.errors.ErrorMessage;
+import br.com.petinder.backend.dtos.response.errors.ErrorMessageDto;
 import br.com.petinder.backend.dtos.response.errors.ErrorsListDTO;
 import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.dtos.setting.CreateSettingDto;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,10 +38,12 @@ public class SettingControllerTest extends BaseTest {
     }
 
     @Test
-    public void createSettingSuccessfully(){
+    public void createSettingSuccessfully() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         CreateSettingDto request = getCreateSettingDto();
         ResponseSettingDto responseBody = webTestClient.post()
                 .uri("/setting/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CREATED)
@@ -58,10 +62,25 @@ public class SettingControllerTest extends BaseTest {
     }
 
     @Test
-    public void createSettingWithoutRequiredFields(){
+    public void createSettingWithoutRequiredRole() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        CreateSettingDto request = getCreateSettingDto();
+        webTestClient.post()
+                .uri("/setting/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+
+    }
+
+    @Test
+    public void createSettingWithoutRequiredFields() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         CreateSettingDto request = new CreateSettingDto();
         List<FieldErrorsMessageDTO> response = webTestClient.post()
                 .uri("/setting/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
@@ -72,11 +91,13 @@ public class SettingControllerTest extends BaseTest {
 
     @Test
     public void createExistingSetting() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         Setting setting = createSetting();
         CreateSettingDto request = getCreateSettingDto();
         request.setCode(setting.getCode());
         ErrorsListDTO response = webTestClient.post()
                 .uri("/setting/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
@@ -89,9 +110,11 @@ public class SettingControllerTest extends BaseTest {
 
     @Test
     public void deleteSettingSuccessfully() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         Setting setting = createSetting();
         MessageDTO response = webTestClient.delete()
                 .uri("/setting/delete/" + setting.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(MessageDTO.class)
@@ -104,12 +127,25 @@ public class SettingControllerTest extends BaseTest {
     }
 
     @Test
-    public void deleteNonExistingSetting(){
-        ErrorMessage response = webTestClient.delete()
+    public void deleteSettingWithoutRequiredRole() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        Setting setting = createSetting();
+        webTestClient.delete()
+                .uri("/setting/delete/" + setting.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void deleteNonExistingSetting() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
+        ErrorMessageDto response = webTestClient.delete()
                 .uri("/setting/delete/1234")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
-                .expectBody(ErrorMessage.class)
+                .expectBody(ErrorMessageDto.class)
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
@@ -118,11 +154,13 @@ public class SettingControllerTest extends BaseTest {
 
     @Test
     public void editSettingSuccessfully() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         EditSettingDto request = new EditSettingDto(createSetting());
         request.setCode("new code");
         request.setValue("new value");
         ResponseSettingDto response = webTestClient.put()
                 .uri("/setting/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
@@ -141,17 +179,32 @@ public class SettingControllerTest extends BaseTest {
     }
 
     @Test
-    public void editNonExistingSetting(){
+    public void editSettingWithoutRequiredRule() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        EditSettingDto request = new EditSettingDto(createSetting());
+        request.setCode("new code");
+        request.setValue("new value");
+        webTestClient.put()
+                .uri("/setting/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+    }
+    @Test
+    public void editNonExistingSetting() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         EditSettingDto request = new EditSettingDto();
         request.setId(1234L);
         request.setCode("code");
         request.setValue("value");
-        ErrorMessage response = webTestClient.put()
+        ErrorMessageDto response = webTestClient.put()
                 .uri("/setting/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
-                .expectBody(ErrorMessage.class)
+                .expectBody(ErrorMessageDto.class)
                 .returnResult().getResponseBody();
 
         assertNotNull(response);
@@ -159,10 +212,12 @@ public class SettingControllerTest extends BaseTest {
     }
 
     @Test
-    public void editSettingWithoutRequiredFields(){
+    public void editSettingWithoutRequiredFields() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
         EditSettingDto request = new EditSettingDto();
         List<FieldErrorsMessageDTO> response = webTestClient.put()
                 .uri("/setting/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
@@ -172,4 +227,46 @@ public class SettingControllerTest extends BaseTest {
         assertNotNull(response);
     }
 
+    @Test
+    public void getSettingListWithoutRequiredFields() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        Setting setting = createSetting();
+        EditSettingDto request = new EditSettingDto();
+        webTestClient.put()
+                .uri("/setting/listAll")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void getSettingSuccessfully() throws AlreadyExistsException {
+        Owner owner = createOwnerWithAdminRole();
+        Setting setting = createSetting();
+        EditSettingDto request = new EditSettingDto();
+        ResponseSettingDto response = webTestClient.get()
+                .uri("/setting/get/" + setting.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.OK)
+                .expectBody(ResponseSettingDto.class).returnResult().getResponseBody();
+
+        assertNotNull(response);
+        assertEquals(setting.getId(), response.getId());
+        assertEquals(setting.getCode(), response.getCode());
+        assertEquals(setting.getValue(), response.getValue());
+    }
+
+    @Test
+    public void getSettingWithoutRequiredFields() throws AlreadyExistsException {
+        Owner owner = createOwnerWithUserRole();
+        Setting setting = createSetting();
+        EditSettingDto request = new EditSettingDto();
+        webTestClient.get()
+                .uri("/setting/get/" + setting.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+    }
 }

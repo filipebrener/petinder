@@ -46,13 +46,13 @@ public class SettingService {
         return errors;
     }
 
-    public Setting findById(long id) throws NotFoundException {
+    public Setting findById(Long id) throws NotFoundException {
         Optional<Setting> existingSetting = settingRepository.findById(id);
         if(existingSetting.isEmpty()) throw new NotFoundException("Não foi possível encontrar uma configuração com o id: " + id);
         return existingSetting.get();
     }
 
-    public void delete(long id) throws NotFoundException {
+    public void delete(Long id) throws NotFoundException {
         Setting existingSetting = findById(id);
         settingRepository.delete(existingSetting);
     }

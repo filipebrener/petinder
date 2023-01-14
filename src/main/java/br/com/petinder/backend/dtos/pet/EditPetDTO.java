@@ -9,7 +9,7 @@ import java.util.Date;
 public class EditPetDTO {
 
     @NotNull(message = "O id é obrigatório")
-    private long id;
+    private Long id;
 
     @NotBlank(message = "O nome é obrigatório")
     private String name;
@@ -21,9 +21,9 @@ public class EditPetDTO {
     private boolean hasPedigree;
 
     @NotNull(message = "O id da raça é obrigatório")
-    private long breedId;
+    private Long breedId;
 
-    public EditPetDTO(String name, Date birthDate, boolean hasPedigree, long breedId) {
+    public EditPetDTO(String name, Date birthDate, boolean hasPedigree, Long breedId) {
         this.name = name;
         this.birthDate = birthDate;
         this.hasPedigree = hasPedigree;
@@ -40,11 +40,11 @@ public class EditPetDTO {
         this.breedId = pet.getBreed().getId();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,11 +72,11 @@ public class EditPetDTO {
         this.hasPedigree = hasPedigree;
     }
 
-    public long getBreedId() {
+    public Long getBreedId() {
         return breedId;
     }
 
-    public void setBreedId(long breedId) {
+    public void setBreedId(Long breedId) {
         this.breedId = breedId;
     }
 

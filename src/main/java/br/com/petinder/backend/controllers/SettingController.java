@@ -26,12 +26,11 @@ public class SettingController {
     @PostMapping("/create")
     public ResponseEntity<ResponseSettingDto> create(@RequestBody @Valid CreateSettingDto request) throws AlreadyExistsException {
         Setting persistedSetting = settingService.create(request);
-        ResponseSettingDto response = new ResponseSettingDto(persistedSetting);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponseSettingDto(persistedSetting), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<MessageDTO> delete(@PathVariable(name = "id") long id) throws NotFoundException {
+    public ResponseEntity<MessageDTO> delete(@PathVariable(name = "id") Long id) throws NotFoundException {
         settingService.delete(id);
         return new ResponseEntity<>(new MessageDTO("Setting apagada com sucesso!"), HttpStatus.OK);
     }
@@ -44,10 +43,9 @@ public class SettingController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<ResponseSettingDto> get(@PathVariable(name = "id") long id) throws NotFoundException {
+    public ResponseEntity<ResponseSettingDto> get(@PathVariable(name = "id") Long id) throws NotFoundException {
         Setting setting = settingService.findById(id);
-        ResponseSettingDto response = new ResponseSettingDto(setting);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseSettingDto(setting), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")

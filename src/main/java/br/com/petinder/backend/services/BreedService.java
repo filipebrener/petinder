@@ -19,7 +19,7 @@ public class BreedService {
     @Autowired
     private BreedRepository breedRepository;
 
-    public Breed findById(long id) throws NotFoundException {
+    public Breed findById(Long id) throws NotFoundException {
         Optional<Breed> optionalBreed = breedRepository.findById(id);
         if (optionalBreed.isEmpty()) throw new NotFoundException("Não foi possível encontrar uma raça com o id: " + id);
         return optionalBreed.get();
@@ -39,7 +39,7 @@ public class BreedService {
         return errors;
     }
 
-    public void delete(long id) throws NotFoundException {
+    public void delete(Long id) throws NotFoundException {
         Breed breed = findById(id);
         breedRepository.delete(breed);
     }

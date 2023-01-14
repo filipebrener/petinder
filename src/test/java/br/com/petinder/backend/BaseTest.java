@@ -36,12 +36,18 @@ public abstract class BaseTest {
     @Autowired
     protected SettingService settingService;
 
+    protected String password = uuid();
+
     protected Pet createPet() throws AlreadyExistsException, NotFoundException {
         return petService.create(getCreatePetDto());
     }
 
-    protected Owner createOwner() throws AlreadyExistsException {
-        return ownerService.create(getCreateOwnerDTOWithAddress());
+    protected Owner createOwnerWithUserRole() throws AlreadyExistsException {
+        return ownerService.createWithUserRole(getCreateOwnerDTOWithAddress());
+    }
+
+    protected Owner createOwnerWithAdminRole() throws AlreadyExistsException {
+        return ownerService.createWithAdminRole(getCreateOwnerDTOWithAddress());
     }
 
     protected Breed createBreed() throws AlreadyExistsException {
@@ -57,7 +63,7 @@ public abstract class BaseTest {
     }
 
     protected CreatePetDTO getCreatePetDto() throws AlreadyExistsException {
-        Owner owner = createOwner();
+        Owner owner = createOwnerWithUserRole();
         Breed breed = createBreed();
         CreatePetDTO dto = new CreatePetDTO();
         dto.setBirthDate(new Date());
@@ -81,7 +87,9 @@ public abstract class BaseTest {
         dto.setName("Filipe Brenner");
         dto.setCpf(cpf());
         dto.setEmail(uuid() + "filipe.brener@ufv.br");
-        dto.setCelNumber(uuid().toString().substring(0,11));
+        dto.setCelNumber(uuid().substring(0,11));
+        dto.setPassword(password);
+        dto.setUsername("@cachorrinho" + uuid());
         return dto;
     }
 

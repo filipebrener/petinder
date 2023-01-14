@@ -20,12 +20,12 @@ public class CreatePetDTO {
     private boolean hasPedigree;
 
     @NotNull(message = "É necessário informar o ID da raça!")
-    private long breedId;
+    private Long breedId;
 
     @NotNull(message = "O ID do dono é obrigatório!")
-    private long ownerId;
+    private Long ownerId;
 
-    public CreatePetDTO(String name, Date birthDate, boolean hasPedigree, long breedId, long ownerId) {
+    public CreatePetDTO(String name, Date birthDate, boolean hasPedigree, Long breedId, Long ownerId) {
         this.name = name;
         this.birthDate = birthDate;
         this.hasPedigree = hasPedigree;
@@ -48,11 +48,11 @@ public class CreatePetDTO {
         this.hasPedigree = hasPedigree;
     }
 
-    public long getBreedId() {
+    public Long getBreedId() {
         return breedId;
     }
 
-    public void setBreedId(long breedId) {
+    public void setBreedId(Long breedId) {
         this.breedId = breedId;
     }
 
@@ -68,11 +68,11 @@ public class CreatePetDTO {
         this.birthDate = birthDate;
     }
 
-    public long getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(long ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 }

@@ -7,9 +7,10 @@ import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Owner extends BaseDomain {
+public class Owner extends User {
 
     @NotBlank
     @Column(name = "name", nullable = false)
@@ -34,17 +35,8 @@ public class Owner extends BaseDomain {
 
     @OneToMany
     private List<Pet> pets;
-
-    public Owner(String name, String cpf, String celNumber, String email, Address address, List<Pet> pets) {
-        this.name = name;
-        this.cpf = cpf;
-        this.celNumber = celNumber;
-        this.email = email;
-        this.address = address;
-        this.pets = pets;
-    }
-
-    public Owner(String name, String cpf, String celNumber, String email, Address address) {
+    public Owner(String name, String username, String cpf, String celNumber, String email, String password, Address address, Set<Role> roles) {
+        super(username, password, roles);
         this.name = name;
         this.cpf = cpf;
         this.celNumber = celNumber;
@@ -52,7 +44,8 @@ public class Owner extends BaseDomain {
         this.address = address;
     }
 
-    public Owner(String name, String cpf, String celNumber, String email) {
+    public Owner(String name, String username, String cpf, String celNumber, String email, String password, Set<Role> roles) {
+        super(username, password, roles);
         this.name = name;
         this.cpf = cpf;
         this.celNumber = celNumber;

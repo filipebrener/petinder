@@ -1,10 +1,11 @@
 package br.com.petinder.backend.dtos.owner;
 
+import br.com.petinder.backend.domains.Role;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
+
+import java.util.Set;
 
 public class CreateOwnerDTO {
 
@@ -22,6 +23,13 @@ public class CreateOwnerDTO {
     @NotBlank(message = "O email não pode ficar vazio!")
     @Email(message = "O email não está em um formato válido!")
     private String email;
+
+    @NotBlank(message = "A senha é obrigatória")
+    @Size(min = 8, message = "A senha deve ter no mínimo {value} caracteres")
+    private String password;
+
+    @NotBlank(message = "O username não pode ficar vazio!")
+    private String username;
 
     private CreateAddressDTO address;
 
@@ -66,5 +74,21 @@ public class CreateOwnerDTO {
 
     public void setAddress(CreateAddressDTO address) {
         this.address = address;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

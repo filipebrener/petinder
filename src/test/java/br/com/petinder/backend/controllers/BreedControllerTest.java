@@ -2,6 +2,7 @@ package br.com.petinder.backend.controllers;
 
 import br.com.petinder.backend.BaseTest;
 import br.com.petinder.backend.domains.Breed;
+import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.dtos.response.MessageDTO;
 import br.com.petinder.backend.dtos.breed.CreateBreedDTO;
 import br.com.petinder.backend.dtos.breed.EditBreedDTO;
@@ -11,6 +12,8 @@ import br.com.petinder.backend.dtos.response.errors.FieldErrorsMessageDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.BreedRepository;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +40,15 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void createBreedSuccessfully() throws NotFoundException {
+    public void createBreedSuccessfully() throws NotFoundException, AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         CreateBreedDTO dto = getCreateBreedDto();
         String breedNameInUpperCase = "BORDER COLLIE";
         String breedNameCapitalized = "Border collie";
         dto.setName(breedNameInUpperCase);
         ResponseBreedDTO response = webTestClient.post()
                 .uri("/breed/create")
-                .bodyValue(dto)
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CREATED)
                 .expectBody(ResponseBreedDTO.class)
@@ -64,11 +68,13 @@ public class BreedControllerTest extends BaseTest {
 
     @Test
     public void createAlreadyExistingBreedTest() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         Breed breed = createBreed();
         CreateBreedDTO requestBody = getCreateBreedDto();
         requestBody.setName(breed.getName());
         ErrorsListDTO response = webTestClient.post()
                 .uri("/breed/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
@@ -82,9 +88,11 @@ public class BreedControllerTest extends BaseTest {
 
     @Test
     public void deleteBreedSuccessfully() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         Breed breed = createBreed();
         MessageDTO response = webTestClient.delete()
                 .uri("/breed/delete/" + breed.getId())
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
                 .expectBody(MessageDTO.class)
@@ -98,12 +106,14 @@ public class BreedControllerTest extends BaseTest {
 
     @Test
     public void editBreedNameSuccessfully() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         Breed breed = createBreed();
         String newName = "Hot dog";
         EditBreedDTO requestBody = new EditBreedDTO(breed);
         requestBody.setName(newName);
         ResponseBreedDTO response = webTestClient.put()
                 .uri("/breed/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
@@ -121,12 +131,14 @@ public class BreedControllerTest extends BaseTest {
 
     @Test
     public void editBreedDescriptionSuccessfully() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         Breed breed = createBreed();
         String newDescription = "Cachorro quente mais gostoso do oeste!";
         EditBreedDTO requestBody = new EditBreedDTO(breed);
         requestBody.setDescription(newDescription);
         ResponseBreedDTO response = webTestClient.put()
                 .uri("/breed/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.OK)
@@ -143,15 +155,17 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void editNonExistingBreed(){
+    public void editNonExistingBreed() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         EditBreedDTO requestBody = new EditBreedDTO();
         String uuid = uuid();
-        long id = 1234;
+        Long id = 1234L;
         requestBody.setId(id);
         requestBody.setName("nome: " + uuid);
         requestBody.setDescription("descrição: " + uuid);
         ErrorsListDTO response = webTestClient.put()
                 .uri("/breed/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
@@ -163,10 +177,12 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void deleteNonExistingBreed(){
-        long id = 1234;
+    public void deleteNonExistingBreed() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
+        Long id = 1234L;
         ErrorsListDTO response = webTestClient.delete()
                 .uri("/breed/delete/" + id)
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
                 .expectBody(ErrorsListDTO.class)
@@ -177,10 +193,12 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void editBreedSendingRequestWithoutRequiredFieldsTest(){
+    public void editBreedSendingRequestWithoutRequiredFieldsTest() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         EditBreedDTO requestBody = new EditBreedDTO();
         List<FieldErrorsMessageDTO> response = webTestClient.put()
                 .uri("/breed/edit")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
@@ -191,10 +209,12 @@ public class BreedControllerTest extends BaseTest {
     }
 
     @Test
-    public void createBreedSendingRequestWithoutRequiredFieldsTest(){
+    public void createBreedSendingRequestWithoutRequiredFieldsTest() throws AlreadyExistsException {
+        Owner admin = createOwnerWithAdminRole();
         CreateBreedDTO requestBody = new CreateBreedDTO();
         List<FieldErrorsMessageDTO> response = webTestClient.post()
                 .uri("/breed/create")
+                .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .bodyValue(requestBody)
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)

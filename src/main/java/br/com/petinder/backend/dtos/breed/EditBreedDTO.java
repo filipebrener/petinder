@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 
 public class EditBreedDTO {
 
-    @NotNull(message = "O uuid não pode ficar em branco")
-    private long id;
+    @NotNull(message = "O id não pode ficar em branco")
+    private Long id;
 
     @NotBlank(message = "A raça não pode ficar em branco")
     private String name;
@@ -15,7 +15,7 @@ public class EditBreedDTO {
     @NotBlank(message = "A descrição não pode ficar em branco")
     private String description;
 
-    public EditBreedDTO(String name, String description, long id) {
+    public EditBreedDTO(String name, String description,Long id) {
         this.name = name;
         this.description = description;
         this.id = id;
@@ -30,11 +30,11 @@ public class EditBreedDTO {
         this.description = breed.getDescription();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

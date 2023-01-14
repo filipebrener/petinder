@@ -1,14 +1,14 @@
 package br.com.petinder.backend.dtos.response.errors;
 
-public class ErrorMessage {
+public class ErrorMessageDto {
 
     private String message;
 
-    public ErrorMessage(String message) {
+    public ErrorMessageDto(String message) {
         this.message = message;
     }
 
-    public ErrorMessage() {
+    public ErrorMessageDto() {
     }
 
     public String getMessage() {
