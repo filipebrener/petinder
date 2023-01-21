@@ -48,6 +48,7 @@ public class BreedControllerTest extends BaseTest {
         dto.setName(breedNameInUpperCase);
         ResponseBreedDTO response = webTestClient.post()
                 .uri("/breed/create")
+                .bodyValue(dto)
                 .headers( httpHeaders -> httpHeaders.setBasicAuth(admin.getUsername(), password))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CREATED)
