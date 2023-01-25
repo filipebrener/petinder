@@ -1,14 +1,23 @@
 package br.com.petinder.backend.dtos.owner;
 
 import br.com.petinder.backend.dtos.address.EditAddressDTO;
+import br.com.petinder.backend.validators.OfLegalAge;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.Date;
 
 public class EditOwnerDTO {
 
     @NotNull(message = "É necessário informar o ID")
     private Long id;
+
+    @NotNull(message = "A data de nascimento é obrigatório!")
+    @OfLegalAge(currentAge = 18, message = "É necessário ter no mínimo {currentAge} anos!")
+    private Date birthDate;
 
     @NotBlank(message = "O nome não pode estar vazio!")
     private String name;
@@ -18,6 +27,14 @@ public class EditOwnerDTO {
     private String celNumber;
 
     private EditAddressDTO address;
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public Long getId() {
         return id;

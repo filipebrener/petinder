@@ -16,6 +16,8 @@ import br.com.petinder.backend.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -82,6 +84,15 @@ public abstract class BaseTest {
         return dto;
     }
 
+    protected Date getNineTeenYearsAgo(){
+        return Date.from(
+                LocalDateTime
+                        .now()
+                        .minusYears(19)
+                        .atZone(ZoneId.systemDefault()).toInstant()
+        );
+    }
+
     protected CreateOwnerDTO getCreateOwnerDTOWithoutAddress(){
         CreateOwnerDTO dto = new CreateOwnerDTO();
         dto.setName("Filipe Brenner");
@@ -90,6 +101,7 @@ public abstract class BaseTest {
         dto.setCelNumber(uuid().substring(0,11));
         dto.setPassword(password);
         dto.setUsername("@cachorrinho" + uuid());
+        dto.setBirthDate(getNineTeenYearsAgo());
         return dto;
     }
 

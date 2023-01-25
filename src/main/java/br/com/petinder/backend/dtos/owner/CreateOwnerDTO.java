@@ -1,11 +1,11 @@
 package br.com.petinder.backend.dtos.owner;
 
-import br.com.petinder.backend.domains.Role;
 import br.com.petinder.backend.dtos.address.CreateAddressDTO;
+import br.com.petinder.backend.validators.OfLegalAge;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
-import java.util.Set;
+import java.util.Date;
 
 public class CreateOwnerDTO {
 
@@ -15,6 +15,10 @@ public class CreateOwnerDTO {
     @CPF(message = "O CPF [${validatedValue}] não é válido!")
     @NotBlank(message = "O CPF não pode estar vazio!")
     private String cpf;
+
+    @NotNull(message = "A data de nascimento é obrigatória")
+    @OfLegalAge(currentAge = 18, message = "É obrigatório ter no mínimo {currentAge} anos!")
+    private Date birthDate;
 
     @NotBlank(message = "O número de telefone não pode estar vazio!")
     @Size(min = 11, max = 14, message = "O número de celular deve conter entre 11 e 14 caracteres!")
@@ -34,6 +38,14 @@ public class CreateOwnerDTO {
     private CreateAddressDTO address;
 
     public CreateOwnerDTO() {
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getName() {

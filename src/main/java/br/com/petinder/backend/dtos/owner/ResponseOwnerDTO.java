@@ -3,6 +3,8 @@ package br.com.petinder.backend.dtos.owner;
 import br.com.petinder.backend.domains.Owner;
 import br.com.petinder.backend.dtos.address.ResponseAddressDTO;
 
+import java.util.Date;
+
 public class ResponseOwnerDTO {
 
     private Long id;
@@ -15,6 +17,8 @@ public class ResponseOwnerDTO {
 
     private String email;
 
+    private Date birthDate;
+
     private ResponseAddressDTO address;
 
     public ResponseOwnerDTO(Owner owner) {
@@ -24,9 +28,18 @@ public class ResponseOwnerDTO {
         this.email = owner.getEmail();
         this.celNumber = owner.getCelNumber();
         this.address = owner.getAddress() != null ? new ResponseAddressDTO(owner.getAddress()) : null;
+        this.birthDate = owner.getBirthDate();
     }
 
     public ResponseOwnerDTO() {
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getCpf() {

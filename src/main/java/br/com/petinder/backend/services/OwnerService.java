@@ -11,8 +11,8 @@ import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.OwnerRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
+
 
 @Service
 public class OwnerService {
@@ -60,13 +60,13 @@ public class OwnerService {
     }
 
     private Owner createWithoutAddress(CreateOwnerDTO dto, Set<Role> roles){
-        Owner newOwner = new Owner(dto.getName(), dto.getUsername(), dto.getCpf(), dto.getCelNumber(), dto.getEmail(), dto.getPassword(), roles);
+        Owner newOwner = new Owner(dto.getName(), dto.getBirthDate(), dto.getUsername(), dto.getCpf(), dto.getCelNumber(), dto.getEmail(), dto.getPassword(), roles);
         return ownerRepository.save(newOwner);
     }
 
     private Owner createWithAddress(CreateOwnerDTO dto, Set<Role> roles){
         Address newAddress = new Address(dto.getAddress());
-        Owner newOwner = new Owner(dto.getName(), dto.getUsername(), dto.getCpf(), dto.getCelNumber(), dto.getEmail(), dto.getPassword(), newAddress, roles);
+        Owner newOwner = new Owner(dto.getName(), dto.getBirthDate(), dto.getUsername(), dto.getCpf(), dto.getCelNumber(), dto.getEmail(), dto.getPassword(), newAddress, roles);
         return ownerRepository.save(newOwner);
     }
 
@@ -89,6 +89,7 @@ public class OwnerService {
         Owner owner = findById(dto.getId());
         if(dto.getName() != null) owner.setName(dto.getName());
         if(dto.getCelNumber() != null) owner.setCelNumber(dto.getCelNumber());
+        if(dto.getBirthDate() != null) owner.setBirthDate(dto.getBirthDate());
         EditAddressDTO newAddressDto = dto.getAddress();
         if(newAddressDto != null) owner.setAddress(new Address(newAddressDto));
         return ownerRepository.save(owner);

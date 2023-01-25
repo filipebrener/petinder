@@ -1,11 +1,11 @@
 package br.com.petinder.backend.domains;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import br.com.petinder.backend.validators.OfLegalAge;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +15,12 @@ public class Owner extends User {
     @NotBlank
     @Column(name = "name", nullable = false)
     private String name;
+
+    @NotNull
+    @Temporal(TemporalType.DATE)
+    @OfLegalAge(currentAge = 18)
+    @Column(name = "birth_date", nullable = false)
+    private Date birthDate;
 
     @CPF
     @NotBlank
@@ -35,24 +41,34 @@ public class Owner extends User {
 
     @OneToMany
     private List<Pet> pets;
-    public Owner(String name, String username, String cpf, String celNumber, String email, String password, Address address, Set<Role> roles) {
+    public Owner(String name, Date birthDate, String username, String cpf, String celNumber, String email, String password, Address address, Set<Role> roles) {
         super(username, password, roles);
         this.name = name;
+        this.birthDate = birthDate;
         this.cpf = cpf;
         this.celNumber = celNumber;
         this.email = email;
         this.address = address;
     }
 
-    public Owner(String name, String username, String cpf, String celNumber, String email, String password, Set<Role> roles) {
+    public Owner(String name, Date birthDate, String username, String cpf, String celNumber, String email, String password, Set<Role> roles) {
         super(username, password, roles);
         this.name = name;
+        this.birthDate = birthDate;
         this.cpf = cpf;
         this.celNumber = celNumber;
         this.email = email;
     }
 
     public Owner() {}
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public String getName() {
         return name;

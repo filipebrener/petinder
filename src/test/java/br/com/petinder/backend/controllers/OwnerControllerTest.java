@@ -14,6 +14,7 @@ import br.com.petinder.backend.dtos.owner.ResponseOwnerDTO;
 import br.com.petinder.backend.exceptions.AlreadyExistsException;
 import br.com.petinder.backend.exceptions.NotFoundException;
 import br.com.petinder.backend.repositories.OwnerRepository;
+import org.assertj.core.util.DateUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,13 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -73,6 +78,24 @@ public class OwnerControllerTest extends BaseTest {
         assertOwnerDetails(persistedOwner, dto);
         assertNull(persistedOwner.getAddress());
         assertNull(dto.getAddress());
+    }
+
+    @Test
+    public void createOwnerWithoutRequiredMinAge(){
+        CreateOwnerDTO dto = getCreateOwnerDTOWithAddress();
+        dto.setBirthDate(new Date());
+        List<FieldErrorsMessageDTO> response = webTestClient.post()
+                .uri("/owner/create")
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.BAD_REQUEST)
+                .expectBodyList(FieldErrorsMessageDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertEquals(1, response.size());
+        assertEquals(response.get(0).getField(), "birthDate");
+        assertEquals(response.get(0).getErrors().get(0), "É obrigatório ter no mínimo 18 anos!");
     }
 
     @Test
@@ -147,6 +170,8 @@ public class OwnerControllerTest extends BaseTest {
         dto.setId(owner.getId());
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
+        Date nineteenYearsAgo = getNineTeenYearsAgo();
+        dto.setBirthDate(nineteenYearsAgo);
         webTestClient.put()
                 .uri("/owner/edit")
                 .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
@@ -159,6 +184,7 @@ public class OwnerControllerTest extends BaseTest {
         Owner editedOwner = optionalEditedOwner.get();
         assertEquals(newName, editedOwner.getName());
         assertEquals(newCelNumber, editedOwner.getCelNumber());
+        assertEquals(DateUtil.truncateTime(nineteenYearsAgo), DateUtil.truncateTime(editedOwner.getBirthDate()));
     }
     @Test
     public void deleteOwnerTest() throws AlreadyExistsException {
@@ -205,6 +231,7 @@ public class OwnerControllerTest extends BaseTest {
         dto.setId(1234L);
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
+        dto.setBirthDate(getNineTeenYearsAgo());
         ErrorsListDTO response = webTestClient.put()
                 .uri("/owner/edit")
                 .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
@@ -227,6 +254,7 @@ public class OwnerControllerTest extends BaseTest {
         dto.setId(secondOwner.getId());
         dto.setName(newName);
         dto.setCelNumber(newCelNumber);
+        dto.setBirthDate(getNineTeenYearsAgo());
         ErrorMessageDto response = webTestClient.put()
                 .uri("/owner/edit")
                 .headers( httpHeaders -> httpHeaders.setBasicAuth(owner.getUsername(), password))
